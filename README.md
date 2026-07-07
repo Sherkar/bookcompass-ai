@@ -126,5 +126,5 @@ graph TD
 
 ⚠ NEVER push .env to GitHub. Your API key will be exposed publicly.
 
-## 🎙️ Demo Script
+## Demo Script
 A narration script is available at [DEMO_SCRIPT.txt](DEMO_SCRIPT.txt) to guide you through presenting the BookCompass AI agent.
