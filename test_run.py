@@ -2,7 +2,7 @@ import asyncio
 from google.adk.runners import InMemoryRunner
 from app.agent import app
 from google.genai import types
-from google.genai.errors import ServerError
+from google.genai.errors import ServerError, ClientError
 
 async def run_with_retry(runner, user_id, session_id, new_message=None, max_retries=5):
     for attempt in range(1, max_retries + 1):
@@ -15,13 +15,17 @@ async def run_with_retry(runner, user_id, session_id, new_message=None, max_retr
             ):
                 events.append(event)
             return events
-        except ServerError as e:
-            if "503" in str(e) or "UNAVAILABLE" in str(e):
-                print(f"\n[Warning]: Gemini server under high demand (503). Retrying attempt {attempt}/{max_retries} in 10s...")
+        except (ServerError, ClientError) as e:
+            err_msg = str(e)
+            if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg:
+                print(f"\n[Warning]: Rate limit reached (429). Waiting 60 seconds for quota reset (attempt {attempt}/{max_retries})...")
+                await asyncio.sleep(61)
+            elif "503" in err_msg or "UNAVAILABLE" in err_msg:
+                print(f"\n[Warning]: Gemini server experiencing high demand (503). Retrying in 10s (attempt {attempt}/{max_retries})...")
                 await asyncio.sleep(10)
-                if attempt == max_retries:
-                    raise e
             else:
+                raise e
+            if attempt == max_retries:
                 raise e
 
 async def main():
