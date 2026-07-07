@@ -4,7 +4,7 @@
 
 BookCompass AI is an intelligent reading concierge that understands a user's learning goals and generates a personalized reading roadmap, sequence, and study timeline, complete with security checking and human-in-the-loop review.
 
-## 🚀 Assets
+## Assets
 
 ![Cover Banner](assets/cover_page_banner.png)
 
