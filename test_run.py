@@ -4,15 +4,14 @@ from app.agent import app
 from google.genai import types
 from google.genai.errors import ServerError
 
-async def run_with_retry(runner, user_id, session_id, new_message=None, resume_inputs=None, max_retries=5):
+async def run_with_retry(runner, user_id, session_id, new_message=None, max_retries=5):
     for attempt in range(1, max_retries + 1):
         events = []
         try:
             async for event in runner.run_async(
                 user_id=user_id,
                 session_id=session_id,
-                new_message=new_message,
-                resume_inputs=resume_inputs
+                new_message=new_message
             ):
                 events.append(event)
             return events
@@ -55,13 +54,26 @@ async def main():
         interrupt = active_session.active_interrupts[0]
         print(f"Interrupt ID: {interrupt.id}")
         
-        # Approve the proposal
+        # Approve the proposal by constructing a FunctionResponse part
+        approval_message = types.Content(
+            role="user",
+            parts=[
+                types.Part(
+                    function_response=types.FunctionResponse(
+                        name="human_review",
+                        id=interrupt.id,
+                        response={"output": "yes"}
+                    )
+                )
+            ]
+        )
+        
         print("\n--- Sending Human Approval (Reply 'yes') ---")
         events2 = await run_with_retry(
             runner,
             user_id="user",
             session_id=session.id,
-            resume_inputs={interrupt.id: "yes"}
+            new_message=approval_message
         )
         
         for event in events2:
