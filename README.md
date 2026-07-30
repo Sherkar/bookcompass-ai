@@ -102,9 +102,9 @@ graph TD
 1. Create a new repo at https://github.com/new
    - Name: bookcompass-ai
    - Visibility: Public or Private
-   - Do NOT initialize with README (you already have one)
+   - Do NOT initialize with README ( I already have one)
 
-2. In your terminal, navigate into your project folder:
+2. In MY terminal, navigate into your project folder:
    ```bash
    cd bookcompass-ai
    git init
@@ -123,8 +123,3 @@ graph TD
    *.pyc
    .adk/
    ```
-
-⚠ NEVER push .env to GitHub. Your API key will be exposed publicly.
-
-## Demo Script
-A narration script is available at [DEMO_SCRIPT.txt](DEMO_SCRIPT.txt) to guide you through presenting the BookCompass AI agent.
